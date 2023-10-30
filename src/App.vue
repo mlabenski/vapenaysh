@@ -17,11 +17,11 @@
     <div class="flex">
       <NavBar @navigate="setActivePanel" ref="navbar" class="hidden md:block w-72 text-lg border-r border-gray-300 shadow-md h-[calc(100vh-70px)] overflow-auto relative" />
       
-      <div class="flex-1 p-6 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl">
+      <div class="flex-1 p-2 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl">
         <ActivePanels v-if="activePanel" :panelData="activePanel" />
         <DefaultPanel v-if="!activePanel" :username="`123`" :isMobile="isMobile" ></DefaultPanel>
-        <Notifications :notifications="notifications" @notification-removed="handleNotificationRemoval"></Notifications>
-        <CardsGrid :cards="cards"/>
+        <Notifications v-if="!activePanel" :notifications="notifications" @notification-removed="handleNotificationRemoval"></Notifications>
+        <CardsGrid  v-if="!activePanel" :cards="cards"/>
   </div>
 </div>
 
@@ -131,7 +131,7 @@ notifications: [
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@500&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&family=Noto+Sans&display=swap');
 html,
   body {
     font-family: "Montserrat", sans-serif;

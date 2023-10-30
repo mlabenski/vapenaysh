@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 p-6 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl overflow-y-auto">
+  <div class="flex-1 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl overflow-y-auto">
     <StoreSummary v-if="isStorePanelActive" :store="activeStore" />
     <ProductsHome v-if="isProductsPanelActive" />
   </div>

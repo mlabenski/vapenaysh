@@ -1,5 +1,5 @@
 <template>
-    <div class="p-4 bg-gray-100 h-screen">
+    <div class="bg-gray-100 h-[calc(100vh-90px)] overflow-auto relative">
       <!-- Sidebar -->
   
       <!-- Main Content -->

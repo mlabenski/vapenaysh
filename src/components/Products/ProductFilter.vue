@@ -1,48 +1,51 @@
 <template>
-    <div class="p-4 bg-gray-100">
-    <div v-if="isLoading">
-      <!-- Search Bar -->
-      <div class="mb-4 flex items-center">
-        <input type="text" v-model="localSearchQuery" placeholder="Enter name, SKU, handle or supplier code" class="flex-1 p-2 border rounded mr-4">
-        <button class="bg-blue-600 text-white p-2 rounded">Search</button>
+  <div class="p-4 bg-gray-100">
+  <div v-if="isLoading">
+    <!-- Filters -->
+    <div class="mb-4 grid grid-cols-3 gap-4">
+      <!-- Left Filters -->
+      <div>
+        <!-- Supplier -->
+        <v-select class="mb-2" :options="suppliers" placeholder="Select a supplier"></v-select>
+        <!-- Purchase order number -->
+        <input type="text" placeholder="Enter order numbers" class="p-2 border rounded w-full">
       </div>
-  
-      <!-- Filters -->
-      <div class="mb-4 grid grid-cols-3 gap-4">
-        <!-- Left Filters -->
-        <div>
-          <!-- Supplier -->
-          <v-select class="mb-2" :options="suppliers" placeholder="Select a supplier"></v-select>
-          <!-- Purchase order number -->
-          <input type="text" placeholder="Enter order numbers" class="p-2 border rounded w-full">
-        </div>
-  
-        <!-- Middle Filters -->
-        <div>
-          <!-- Brand -->
-          <v-select v-model="selectedBrands" class="mb-2" :options="uniqueBrands" multiple label="name" placeholder="Select a brand"></v-select>
 
-          <!-- Product Category -->
-          <v-select :options="uniqueCategories" label="name" multiple placeholder="Select a category"></v-select>
-        </div>
-  
-        <!-- Right Filters -->
-        <div>
-          <!-- Channel Status -->
-          <v-select class="mb-2" :options="channelStatuses" multiple label="name" placeholder="Select a status"></v-select>
-          <!-- Tags -->
-          <input type="text" placeholder="Enter tags" class="p-2 border rounded w-full">
-        </div>
+      <!-- Middle Filters -->
+      <div>
+        <!-- Brand -->
+        <v-select v-model="selectedBrands" class="mb-2" :options="uniqueBrands" multiple label="name" placeholder="Select a brand"></v-select>
+        <!-- Product Category -->
+        <v-select :options="uniqueCategories" label="name" multiple placeholder="Select a category"></v-select>
       </div>
-  
-      <!-- Filter Actions -->
-      <div class="flex justify-end mb-4">
+
+      <!-- Right Filters -->
+      <div>
+        <!-- Channel Status -->
+        <v-select class="mb-2" :options="channelStatuses" multiple label="name" placeholder="Select a status"></v-select>
+        <!-- Tags -->
+        <input type="text" placeholder="Enter tags" class="p-2 border rounded w-full">
+      </div>
+    </div>
+
+    <!-- Filter Actions -->
+    <div class="flex justify-between items-center mb-4">
+      <!-- Search Bar integrated here -->
+      <input 
+        type="text" 
+        v-model="localSearchQuery" 
+        placeholder="Enter name, SKU, handle or supplier code" 
+        class="flex-1 p-2 border rounded mr-4"
+      >
+      <div>
         <button class="text-blue-600 p-2 mr-4">Clear filters</button>
         <button class="bg-blue-600 text-white p-2 rounded" @click="applyFilters()">Search</button>
       </div>
     </div>
-    </div>
+  </div>
+  </div>
 </template>
+
   
   <script>
 import { mapGetters } from 'vuex';
