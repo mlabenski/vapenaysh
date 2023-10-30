@@ -38,7 +38,7 @@
 
 
 <script>
-import BrandFilterHeader from './BrandFilterHeader.vue';
+import BrandFilterHeader from '../StoreID/BrandFilterHeader.vue';
 import ProductEntry from '../Products/productEntry.vue';
 export default {
 components: {BrandFilterHeader, ProductEntry},
