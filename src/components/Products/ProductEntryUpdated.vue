@@ -13,14 +13,14 @@
       <!-- Name Field -->
       <div class="flex-1 mr-2">
         <label for="name" class="block text-sm font-bold mb-2">Name:</label>
-        <input type="text" v-model="localProduct.name" class="border p-2 w-full">
+        <input type="text" v-model="localProduct.flavor" class="border p-2 w-full">
       </div>
       
       <!-- Brand Field -->
       <div class="flex-1 ml-2">
         <label for="brand" class="block text-sm font-bold mb-2">Brand:</label>
         <v-select 
-          v-model="localProduct.brand"
+          v-model="localProduct.brand_name"
           :options="availableBrands"
           class="w-full"
           placeholder="Search or select a brand..."
@@ -81,14 +81,19 @@
     <div class="mb-4">
       <label for="tags" class="block text-sm font-bold mb-2">Product Categories</label>
       <!-- You can replace the input with a tag component -->
-      <input v-model="localProduct.tags" type="text" placeholder="Enter tags" class="border p-2 w-full">
+      <v-select
+        v-model="localProduct.categories"
+        :options="categories"
+        multiple
+        class="w-full"
+        ></v-select>
     </div>
     <div class="mb-4 flex">
       <!-- Name Field -->
       <div class="flex-1 mr-2">
         <label for="brand" class="block text-sm font-bold mb-2">Nicotine Amount:</label>
         <v-select 
-          v-model="localProduct.brand"
+          v-model="localProduct.nicotine_amount"
           :options="availableNicotineAmount"
           class="w-full"
           placeholder="Search or select a bottle size..."
@@ -106,7 +111,7 @@
       <div class="flex-1 ml-2">
         <label for="brand" class="block text-sm font-bold mb-2">Bottle Size:</label>
         <v-select 
-          v-model="localProduct.brand"
+          v-model="localProduct.bottle_size"
           :options="availableBottleSizes"
           class="w-full"
           placeholder="Search or select a nicotine amount..."
@@ -139,10 +144,13 @@ export default {
     product: {
       type: Object,
       default: () => ({
-        name: '',
-        brand: '',
+        flavor: '',
+        brand_name: '',
         description: '',
-        tags: ''
+        categories: '',
+        nicotine_amount: '',
+        bottle_size: '',
+        price: ''
         // ... other product properties
       })
     }
@@ -162,7 +170,7 @@ export default {
       ...mapGetters({
         availableBrands: 'uniqueBrands',
         availableBottleSizes: 'uniqueBottleSizes',
-        availableNicotineAmount: 'uniqueNicotineAmount'
+        availableNicotineAmount: 'uniqueNicotineAmount',
       })
     },
   methods: {
@@ -194,10 +202,14 @@ export default {
       }
     },
     watch: {
-      product(newProduct) {
-        this.localProduct = {...newProduct};
+      product: {
+        immediate: true,
+        handler(newProduct) {
+          this.localProduct = { ...newProduct };
+        }
       }
-    }
+    },
+    
 };
 
 </script>

@@ -17,9 +17,9 @@
     <div class="flex">
       <NavBar @navigate="setActivePanel" ref="navbar" class="hidden md:block w-72 text-lg border-r border-gray-300 shadow-md h-[calc(100vh-70px)] overflow-auto relative" />
       <div class="flex-1 p-2 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl">
-        <ActivePanels v-if="activePanel && activePanel.store === 'View All'" :panelData="activePanel" />
+        <ActivePanels v-if="activePanel && activePanel.store === 'View All' && !editableProduct" :panelData="activePanel" />
         <DefaultPanel v-if="!activePanel" :username="`123`" :isMobile="isMobile" ></DefaultPanel>
-        <ProductEntryUpdated v-if="activePanel && activePanel.store === 'Create New'"/>
+        <ProductEntryUpdated v-if="(activePanel && activePanel.store === 'Create New') || editableProduct" :product="editableProduct"></ProductEntryUpdated>
         <Notifications v-if="!activePanel" :notifications="notifications" @notification-removed="handleNotificationRemoval"></Notifications>
         <CardsGrid  v-if="!activePanel" :cards="cards"/>
       </div>
@@ -91,6 +91,12 @@ notifications: [
     
   },
   methods: {
+    getProductDetails(id) {
+      if (id) {
+        return this.fetchProductById(id);
+      }
+      return {};
+    },
     hideNotification(notification) {
         const index = this.notifications.indexOf(notification);
         if (index > -1) {
@@ -113,10 +119,14 @@ notifications: [
     ...mapActions(['loadProducts']),
   },
   computed: {
-     ...mapGetters(['allProducts']),
+     ...mapGetters(['allProducts','getEditableProduct']),
      products() {
        return this.allProducts;
      },
+     editableProduct() {
+      console.log(this.getEditableProduct);
+      return this.getEditableProduct;
+     }
    },
   mounted() {
       window.addEventListener('resize', this.handleResize);

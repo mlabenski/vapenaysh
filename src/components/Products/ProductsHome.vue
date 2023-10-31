@@ -12,11 +12,16 @@
   
         <!-- Product Table -->
         <vue-good-table
+        @on-selected-rows-change="selectionChanged"
           :columns="columns"
           :rows="displayedProducts"
           :search-options="{ enabled: false }"
-          :pagination-options="{ enabled: true, mode: 'pages' }"
-        ></vue-good-table>
+          :select-options="{ enabled: true }"
+          :pagination-options="{ enabled: true, mode: 'pages' }">
+          <div slot="selected-row-actions">
+            <button @click="editProduct">Edit Product</button>
+          </div>
+        </vue-good-table>
       </div>
     </div>
     </div>
@@ -68,6 +73,7 @@ export default {
            field: 'categories',
          },
        ],
+       selectedRows: []
       };
     },
     created() {
@@ -77,7 +83,16 @@ export default {
         updateFilteredProducts(newFilteredProducts) {
             this.filteredProducts = newFilteredProducts;
         },
-        ...mapActions(['loadProducts']),
+        ...mapActions(['loadProducts', 'updateEditableProductID']),
+        editProduct() {
+          if (this.selectedRows.length) {
+            const productToEdit = this.selectedRows[0]; // if you're only allowing single selection
+            this.updateEditableProductID(productToEdit.product_id);
+          }
+        },
+        selectionChanged(params) {
+          this.selectedRows = params.selectedRows;
+        },
     },
     computed: {
         ...mapGetters(['allProducts', 'filteredProducts']),

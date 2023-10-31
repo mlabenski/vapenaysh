@@ -95,7 +95,8 @@ import "vue-select/dist/vue-select.css";
     watch: {
         localSearchQuery(newQuery) {
             this.$store.commit('SET_FILTERS', { searchQuery: newQuery });
-        }
+        },
+        
     },
   }
 </script>

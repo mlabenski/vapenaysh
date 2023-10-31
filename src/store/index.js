@@ -18,6 +18,7 @@ export default new Vuex.Store({
       orderNumbers: null,
       searchQuery: ''
     },
+    editProductID: null
   },
   mutations: {
     SET_PRODUCTS(state, products) {
@@ -30,6 +31,10 @@ export default new Vuex.Store({
       console.log(filters);
       state.productfilters = {...state.productfilters, ...filters};
     },
+    SET_EDITABLE_PRODUCT_ID(state, payload) {
+      console.log(payload);
+      state.editProductID = payload
+    }
   },
   actions: {
     loadProducts({ commit }) {
@@ -51,6 +56,10 @@ export default new Vuex.Store({
     updateSearchTerm({ commit }, searchTerm) {
       commit('SET_SEARCH_TERM', searchTerm);
     },
+    updateEditableProductID({ commit }, id) {
+      console.log('made it to the editable product ID');
+      commit('SET_EDITABLE_PRODUCT_ID', id)
+    }
   },
   getters: {
     allProducts: (state) => state.products,
@@ -70,6 +79,10 @@ export default new Vuex.Store({
   uniqueNicotineAmount: (state) => {
     const nicotineAmount = state.products.map(product => product.nicotine_amount);
     return [...new Set(nicotineAmount)];
+  },
+  getEditableProduct: (state) => {
+    console.log('inside the editable product')
+    return state.products.find(product => product.product_id === state.editProductID);
   },
   filteredProducts: (state) => {
     return state.products.filter(product => {
