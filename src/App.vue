@@ -16,14 +16,14 @@
 
     <div class="flex">
       <NavBar @navigate="setActivePanel" ref="navbar" class="hidden md:block w-72 text-lg border-r border-gray-300 shadow-md h-[calc(100vh-70px)] overflow-auto relative" />
-      
       <div class="flex-1 p-2 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl">
-        <ActivePanels v-if="activePanel" :panelData="activePanel" />
+        <ActivePanels v-if="activePanel && activePanel.store === 'View All'" :panelData="activePanel" />
         <DefaultPanel v-if="!activePanel" :username="`123`" :isMobile="isMobile" ></DefaultPanel>
+        <ProductEntryUpdated v-if="activePanel && activePanel.store === 'Create New'"/>
         <Notifications v-if="!activePanel" :notifications="notifications" @notification-removed="handleNotificationRemoval"></Notifications>
         <CardsGrid  v-if="!activePanel" :cards="cards"/>
-  </div>
-</div>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -34,12 +34,13 @@ import NavBar from '@/components/NavBar.vue';
 
 import ActivePanels from './components/Panels/Panels.vue'
 import DefaultPanel from './components/Panels/DefaultPanel.vue'
-
+//import ProductEntry from './components/Products/productEntry.vue'
+import ProductEntryUpdated from './components/Products/ProductEntryUpdated.vue'
 import Notifications from './components/Misc/Notifications.vue'
 import CardsGrid from './components/Misc/CardsGrid.vue'
 import { mapGetters, mapActions } from 'vuex';
 export default {
-  components: {NavBar, ActivePanels, DefaultPanel, Notifications, CardsGrid},
+  components: {NavBar, ActivePanels, DefaultPanel, Notifications, CardsGrid, ProductEntryUpdated},
   data() {
     return {
       isMobile: window.innerWidth <= 768,
@@ -136,5 +137,26 @@ html,
   body {
     font-family: "Montserrat", sans-serif;
     background-color: lightgray;
-  }
+}
+  .overlay {
+    position: fixed;  /* or absolute, depending on your needs */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);  /* semi-transparent background */
+    display: flex;
+    align-items: center;  /* center the content vertically */
+    justify-content: center;  /* center the content horizontally */
+    z-index: 1000;  /* high z-index to ensure it sits above other content */
+}
+
+.panel-content {
+    background-color: #ffffff;  /* white background for the actual panel */
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;  /* or whatever maximum width you prefer */
+    width: 100%;  /* takes up full width, but will respect max-width */
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);  /* shadow for a lifted effect */
+}
 </style>

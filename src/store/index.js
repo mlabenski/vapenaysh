@@ -64,8 +64,12 @@ export default new Vuex.Store({
     return [...new Set(brands)];
   },
   uniqueBottleSizes: (state) => {
-    const bottleSizes = state.products.map(product => product.bottleSize);
+    const bottleSizes = state.products.map(product => product.bottle_size);
     return [...new Set(bottleSizes)];
+  },
+  uniqueNicotineAmount: (state) => {
+    const nicotineAmount = state.products.map(product => product.nicotine_amount);
+    return [...new Set(nicotineAmount)];
   },
   filteredProducts: (state) => {
     return state.products.filter(product => {
