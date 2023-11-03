@@ -3,7 +3,7 @@
     <div class="mb-6 flex justify-between items-center">
       <h1 class="text-2xl">New product</h1>
       <div>
-        <button class="text-gray-500 mr-4">Cancel</button>
+        <button class="text-gray-500 mr-4" @click="removeState()">Cancel</button>
         <button @click="saveProduct" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
       </div>
     </div>
@@ -199,6 +199,9 @@ export default {
       },
       toggleRegularOption() {
         this.regularNic = !this.regularNic;
+      },
+      removeState() {
+        this.$emit('cancelProductEntry')
       }
     },
     watch: {
