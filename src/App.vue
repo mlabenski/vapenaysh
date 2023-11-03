@@ -17,7 +17,7 @@
     <div class="flex">
       <NavBar @navigate="setActivePanel" ref="navbar" class="hidden md:block w-72 text-lg border-r border-gray-300 shadow-md h-[calc(100vh-70px)] overflow-auto relative" />
       <div class="flex-1 p-2 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl">
-        <ActivePanels v-if="activePanel && activePanel.store === 'View All' && !editableProduct" :panelData="activePanel" />
+        <ActivePanels v-if="activePanel && (activePanel.store === 'View All' || activePanel.panel === 'store') && !editableProduct" :panelData="activePanel" />
         <DefaultPanel v-if="!activePanel" :username="`123`" :isMobile="isMobile" ></DefaultPanel>
         <ProductEntryUpdated v-if="(activePanel && activePanel.store === 'Create New') || editableProduct" :product="editableProduct"></ProductEntryUpdated>
         <Notifications v-if="!activePanel" :notifications="notifications" @notification-removed="handleNotificationRemoval"></Notifications>

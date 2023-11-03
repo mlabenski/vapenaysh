@@ -20,23 +20,19 @@ export default {
     panelData: {
     type: Object,
         required: true,
-        validator: function (value) {
-        // Check if the object structure contains 'panel' with a valid value
-        const isValidPanel = value.panel && ['store', 'products', /* other panel types */].includes(value.panel);
-        // Check if 'activeStore' is either not set or is a number
-        const isValidActiveStore = value.store === undefined || typeof value.store === 'number';
-        // Both conditions must be true
-        return isValidPanel && isValidActiveStore;
-        },
     },
     storeData: Object
   },
 
   computed: {
     isStorePanelActive() {
+      console.log('panel data is')
+      console.log(this.panelData);
       return this.panelData.panel === 'store';
     },
     isProductsPanelActive() {
+      console.log('panel data is')
+      console.log(this.panelData);
       return this.panelData.panel === 'products';
     },
     activeStore() {
