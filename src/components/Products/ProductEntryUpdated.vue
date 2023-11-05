@@ -39,12 +39,17 @@
       <textarea v-model="localProduct.description" rows="4" placeholder="Enter product description" class="border p-2 w-full"></textarea>
     </div>
 
-    <div class="mb-4">
-      <label for="tags" class="block text-sm font-bold mb-2">Tags</label>
-      <!-- You can replace the input with a tag component -->
-      <input v-model="localProduct.tags" type="text" placeholder="Enter tags" class="border p-2 w-full">
+    <div class="flex mb-4">
+      <div class="flex-grow mr-2">
+        <label for="tags" class="block text-sm font-bold mb-2">Tags</label>
+        <input v-model="localProduct.tags" id="tags" type="text" placeholder="Enter tags" class="border p-2 w-full">
+      </div>
+      <div class="flex-none" style="flex-basis: 10%;">
+        <label for="price" class="block text-sm font-bold mb-2">Price</label>
+        <input v-model="localProduct.price" id="price" type="number" placeholder=0 class="border p-2 w-full">
+      </div>
     </div>
-    <!-- Toggle options -->
+
     <!-- Toggle options -->
     <div class="flex mb-4">
 
@@ -150,7 +155,7 @@ export default {
         categories: '',
         nicotine_amount: '',
         bottle_size: '',
-        price: ''
+        price: 0
         // ... other product properties
       })
     }
@@ -185,7 +190,12 @@ export default {
         }
       },
       saveProduct() {
-        // Send the updated product details to backend or perform other necessary actions
+        // before we make this saveProduct call. Lets see what data we can receive
+        console.log(this.localProduct)
+        this.$store.dispatch('saveProduct', {
+          productData: this.localProduct,
+          storeId: 1,
+        }); 
       },
       addBrandFromInput() {
         const newBrand = this.$refs.brandSelect.search;

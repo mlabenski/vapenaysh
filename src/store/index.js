@@ -34,7 +34,20 @@ export default new Vuex.Store({
     SET_EDITABLE_PRODUCT_ID(state, payload) {
       console.log(payload);
       state.editProductID = payload
-    }
+    },
+    PRODUCT_SAVE_SUCCESS(state, payload) {
+      // Handle the successful save
+      // This could mean updating the state with the new product
+      // or just setting a flag that the save was successful.
+      state.saveStatus = 'SUCCESS';
+      state.products.push(payload.product);
+    },
+    PRODUCT_SAVE_ERROR(state, error) {
+      // Handle the error
+      // Set an error state, and maybe log the error or display a message
+      state.saveStatus = 'ERROR';
+      state.saveError = error;
+    },
   },
   actions: {
     loadProducts({ commit }) {
@@ -46,7 +59,17 @@ export default new Vuex.Store({
           },
         })
         .then((response) => {
-          commit('SET_PRODUCTS', response.data);
+          // Assuming the categories are stored as a comma-separated string
+          const productsWithCategoryArray = response.data.map(product => {
+            if (product.categories) {
+              // Split the string into an array, trim whitespace, sort, and then reassign
+              product.categories = product.categories.split(',')
+                                     .map(cat => cat.trim())
+                                     .sort();
+            }
+            return product;
+          });
+          commit('SET_PRODUCTS', productsWithCategoryArray);
         })
         .catch((error) => {
           console.log(error);
@@ -59,15 +82,47 @@ export default new Vuex.Store({
     updateEditableProductID({ commit }, id) {
       console.log('made it to the editable product ID');
       commit('SET_EDITABLE_PRODUCT_ID', id)
+    },
+    saveProduct({ commit }, { productData, storeId }) {
+      // Convert categories array to a comma-separated string
+      if (productData.categories && Array.isArray(productData.categories)) {
+        productData.categories = productData.categories.join(', ');
+      }
+      
+      // Remove tags property from productData
+      delete productData.tags;
+    
+      axios({
+        method: 'post',
+        url: `http://localhost:8080/product/entry?storeid=${storeId}`,
+        data: productData,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(response => {
+        // Commit to a mutation if necessary
+        // Or directly handle the response
+        commit('PRODUCT_SAVE_SUCCESS', { product: response.data });
+        console.log('Product saved:', response.data);
+      })
+      .catch(error => {
+        // Commit to an error handling mutation or handle error
+        commit('PRODUCT_SAVE_ERROR', error);
+        console.error('Error saving product:', error);
+      });
     }
+    
   },
   getters: {
     allProducts: (state) => state.products,
-  uniqueCategories: (state) => {
-    console.log(state.products);
-    const categories = state.products.map(product => product.categories);
-    return [...new Set(categories)];
-  },
+    uniqueCategories: (state) => {
+      // Flatten the categories arrays from all products
+      const categories = state.products.flatMap(product => product.categories);
+      
+      // Use Set to find unique values
+      return [...new Set(categories)];
+    },
   uniqueBrands: (state) => {
     const brands = state.products.map(product => product.brand_name);
     return [...new Set(brands)];

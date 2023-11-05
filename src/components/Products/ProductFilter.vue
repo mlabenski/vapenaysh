@@ -16,7 +16,7 @@
         <!-- Brand -->
         <v-select v-model="selectedBrands" class="mb-2" :options="uniqueBrands" multiple label="name" placeholder="Select a brand"></v-select>
         <!-- Product Category -->
-        <v-select :options="uniqueCategories" label="name" multiple placeholder="Select a category"></v-select>
+        <v-select v-model="selectedCategory" :options="uniqueCategories" label="name" multiple placeholder="Select a category"></v-select>
       </div>
 
       <!-- Right Filters -->
