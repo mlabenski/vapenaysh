@@ -4,7 +4,7 @@ import './assets/tailwind.css'
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
-import store from './store'; 
+import store from './store/index.js'; 
 import axios from 'axios';
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'

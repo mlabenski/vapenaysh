@@ -18,11 +18,15 @@ export default new Vuex.Store({
       orderNumbers: null,
       searchQuery: ''
     },
-    editProductID: null
+    editProductID: null,
+    availableCategories: []
   },
   mutations: {
     SET_PRODUCTS(state, products) {
       state.products = products;
+    },
+    SET_CATEGORIES(state, categories) {
+      state.availableCategories = categories;
     },
     SET_SEARCH_TERM(state, payload) {
       state.searchTerm = payload;
@@ -76,6 +80,27 @@ export default new Vuex.Store({
           // Handle the error here, e.g., you might commit to a 'SET_ERROR' mutation.
         });
     },
+
+    // Categories Get retrieval
+    async fetchCategories({ commit }) {
+      const url = 'http://localhost:8080/categories';
+    
+      try {
+        const response = await axios.get(url);
+        console.log('Response data:', response.data); // Check the raw response
+    
+        const categories = response.data.map(item => {
+          console.log('Item before flat:', item.categories); // Log the data before flat
+          return item.categories;
+        }).flat();
+    
+        console.log('Categories before commit:', categories); // Final log before commit
+        commit('SET_CATEGORIES', categories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    },
+
     updateSearchTerm({ commit }, searchTerm) {
       commit('SET_SEARCH_TERM', searchTerm);
     },
@@ -123,45 +148,52 @@ export default new Vuex.Store({
       // Use Set to find unique values
       return [...new Set(categories)];
     },
-  uniqueBrands: (state) => {
-    const brands = state.products.map(product => product.brand_name);
-    return [...new Set(brands)];
-  },
-  uniqueBottleSizes: (state) => {
-    const bottleSizes = state.products.map(product => product.bottle_size);
-    return [...new Set(bottleSizes)];
-  },
-  uniqueNicotineAmount: (state) => {
-    const nicotineAmount = state.products.map(product => product.nicotine_amount);
-    return [...new Set(nicotineAmount)];
-  },
-  getEditableProduct: (state) => {
-    console.log('inside the editable product')
-    return state.products.find(product => product.product_id === state.editProductID);
-  },
-  filteredProducts: (state) => {
-    return state.products.filter(product => {
-      let matches = true;
 
-      // For each filter, check if product matches criteria
-      if (state.productfilters.supplier && product.supplier !== state.productfilters.supplier) matches = false;
-      if (state.productfilters.brand && !state.productfilters.brand.includes(product.brand_name)) matches = false;
-      if (state.productfilters.category && !state.productfilters.category.some(category => product.categories.includes(category))) {
-        matches = false;
-      }
-      if (state.productfilters.channelStatus && product.channelStatus !== state.productfilters.channelStatus) matches = false;
-      if (state.productfilters.tags && !product.tags.includes(state.productfilters.tags)) matches = false;
-      if (state.productfilters.searchTerm && !product.name.includes(state.productfilters.searchTerm) && !product.description.includes(state.productfilters.searchTerm)) matches = false;
-      if (state.productfilters.orderNumbers && product.orderNumbers !== state.productfilters.orderNumbers) matches = false;
-      if (
-        state.productfilters.searchQuery &&
-        (!product.name || !product.name.includes(state.productfilters.searchQuery)) &&
-        (!product.description || !product.description.includes(state.productfilters.searchQuery))
-      ) {
-        matches = false;
-      }
-      return matches;
-    });
-  },
+    categories: (state) => state.availableCategories,
+
+    uniqueBrands: (state) => {
+      const brands = state.products.map(product => product.brand_name);
+      return [...new Set(brands)];
+    },
+    uniqueBottleSizes: (state) => {
+      const bottleSizes = state.products.map(product => product.bottle_size);
+      return [...new Set(bottleSizes)];
+    },
+    uniqueNicotineAmount: (state) => {
+      const nicotineAmount = state.products.map(product => product.nicotine_amount);
+      return [...new Set(nicotineAmount)];
+    },
+    getEditableProduct: (state) => {
+      console.log('inside the editable product')
+      return state.products.find(product => product.product_id === state.editProductID);
+    },
+    filteredProducts: (state) => {
+      return state.products.filter(product => {
+        let matches = true;
+
+        // For each filter, check if product matches criteria
+        if (state.productfilters.supplier && product.supplier !== state.productfilters.supplier) matches = false;
+        if (state.productfilters.brand && !state.productfilters.brand.includes(product.brand_name)) matches = false;
+        if (state.productfilters.category && !state.productfilters.category.some(category => product.categories.includes(category))) {
+          matches = false;
+        }
+        if (state.productfilters.channelStatus && product.channelStatus !== state.productfilters.channelStatus) matches = false;
+        if (state.productfilters.tags && !product.tags.includes(state.productfilters.tags)) matches = false;
+        if (state.productfilters.searchTerm && !product.name.includes(state.productfilters.searchTerm) && !product.description.includes(state.productfilters.searchTerm)) matches = false;
+        if (state.productfilters.orderNumbers && product.orderNumbers !== state.productfilters.orderNumbers) matches = false;
+        if (
+          state.productfilters.searchQuery &&
+          (!product.name || !product.name.includes(state.productfilters.searchQuery)) &&
+          (!product.description || !product.description.includes(state.productfilters.searchQuery))
+        ) {
+          matches = false;
+        }
+        return matches;
+      });
+    },
+    errorGetter: () => {
+      throw new Error('Error from getter');
+    }
+    //end of getters
 }
 });

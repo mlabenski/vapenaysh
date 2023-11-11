@@ -196,6 +196,7 @@ export default {
           productData: this.localProduct,
           storeId: 1,
         }); 
+        this.localProduct = null;
       },
       addBrandFromInput() {
         const newBrand = this.$refs.brandSelect.search;

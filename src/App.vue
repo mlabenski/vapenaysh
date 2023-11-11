@@ -120,10 +120,10 @@ notifications: [
       this.activePanel = {'panel': payload.panel, 'store': payload.store };
          //this.activePanel = panel;
     },
-    ...mapActions(['loadProducts', 'updateEditableProductID']),
+    ...mapActions(['loadProducts', 'updateEditableProductID', 'fetchCategories']),
   },
   computed: {
-     ...mapGetters(['allProducts','getEditableProduct']),
+     ...mapGetters(['allProducts','getEditableProduct', 'categories']),
      products() {
        return this.allProducts;
      },
@@ -139,6 +139,7 @@ notifications: [
       window.removeEventListener('resize', this.handleResize);
     },
     created() {
+      this.fetchCategories();
      this.loadProducts();
    },
   };
