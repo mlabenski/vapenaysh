@@ -2,10 +2,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-
+import { pendingEdits } from './pendingEdits/index.js';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  modules: {
+    pendingEdits
+  },
   state: {
     products: [],
     productfilters: {
@@ -56,30 +59,32 @@ export default new Vuex.Store({
   actions: {
     loadProducts({ commit }) {
       axios
-        .get('http://127.0.0.1:8080/store/products', {
+        .get('http://127.0.0.1:8080/v2/store/products', {
           params: {
-            storeID: 2,
             details: true,
           },
         })
         .then((response) => {
-          // Assuming the categories are stored as a comma-separated string
-          const productsWithCategoryArray = response.data.map(product => {
+          const products = response.data.map(product => {
+            // Convert categories from a comma-separated string to an array
             if (product.categories) {
-              // Split the string into an array, trim whitespace, sort, and then reassign
               product.categories = product.categories.split(',')
-                                     .map(cat => cat.trim())
-                                     .sort();
+                                       .map(cat => cat.trim())
+                                       .sort();
+            } else {
+              product.categories = []; // Set to an empty array if there are no categories
             }
+    
             return product;
           });
-          commit('SET_PRODUCTS', productsWithCategoryArray);
+          commit('SET_PRODUCTS', products);
         })
         .catch((error) => {
           console.log(error);
           // Handle the error here, e.g., you might commit to a 'SET_ERROR' mutation.
         });
     },
+    
 
     // Categories Get retrieval
     async fetchCategories({ commit }) {

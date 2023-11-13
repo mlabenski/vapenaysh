@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "esnext",
+    "module": "es2015",
     "baseUrl": "./",
     "moduleResolution": "node",
     "paths": {
@@ -13,7 +13,16 @@
       "esnext",
       "dom",
       "dom.iterable",
-      "scripthost"
-    ]
-  }
+      "scripthost",
+	  "es2015"
+    ],
+	"allowJs": true,
+	"strict": true,
+	"noUnusedLocals": true,
+	"noUnusedParameters": true,
+	"jsx": "preserve",
+	"jsxFactory": "h"
+  },
+  "include": ["./**/*.ts", "./src/**/*"],
+  "compileOnSave": false
 }
