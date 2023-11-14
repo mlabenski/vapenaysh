@@ -74,7 +74,7 @@ export default new Vuex.Store({
             } else {
               product.categories = []; // Set to an empty array if there are no categories
             }
-    
+
             return product;
           });
           commit('SET_PRODUCTS', products);
@@ -84,21 +84,21 @@ export default new Vuex.Store({
           // Handle the error here, e.g., you might commit to a 'SET_ERROR' mutation.
         });
     },
-    
+
 
     // Categories Get retrieval
     async fetchCategories({ commit }) {
       const url = 'http://localhost:8080/categories';
-    
+
       try {
         const response = await axios.get(url);
         console.log('Response data:', response.data); // Check the raw response
-    
+
         const categories = response.data.map(item => {
           console.log('Item before flat:', item.categories); // Log the data before flat
           return item.categories;
         }).flat();
-    
+
         console.log('Categories before commit:', categories); // Final log before commit
         commit('SET_CATEGORIES', categories);
       } catch (error) {
@@ -118,10 +118,10 @@ export default new Vuex.Store({
       if (productData.categories && Array.isArray(productData.categories)) {
         productData.categories = productData.categories.join(', ');
       }
-      
+
       // Remove tags property from productData
       delete productData.tags;
-    
+
       axios({
         method: 'post',
         url: `http://localhost:8080/product/entry?storeid=${storeId}`,
@@ -142,14 +142,14 @@ export default new Vuex.Store({
         console.error('Error saving product:', error);
       });
     }
-    
+
   },
   getters: {
     allProducts: (state) => state.products,
     uniqueCategories: (state) => {
       // Flatten the categories arrays from all products
       const categories = state.products.flatMap(product => product.categories);
-      
+
       // Use Set to find unique values
       return [...new Set(categories)];
     },
@@ -193,6 +193,9 @@ export default new Vuex.Store({
         ) {
           matches = false;
         }
+		if (state.productfilters.store && (!product.stores || !product.stores.includes(state.productfilters.store))) {
+			matches = false;
+		}
         return matches;
       });
     },
