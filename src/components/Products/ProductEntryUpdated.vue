@@ -12,14 +12,14 @@
     <div class="mb-4 flex">
       <!-- Name Field -->
       <div class="flex-1 mr-2">
-        <label for="name" class="block text-sm font-bold mb-2">Name:</label>
+        <label for="flavor" class="block text-sm font-bold mb-2">Flavor:</label>
         <input type="text" v-model="localProduct.flavor" class="border p-2 w-full">
       </div>
-      
+
       <!-- Brand Field -->
       <div class="flex-1 ml-2">
         <label for="brand" class="block text-sm font-bold mb-2">Brand:</label>
-        <v-select 
+        <v-select
           v-model="localProduct.brand_name"
           :options="availableBrands"
           class="w-full"
@@ -97,7 +97,7 @@
       <!-- Name Field -->
       <div class="flex-1 mr-2">
         <label for="brand" class="block text-sm font-bold mb-2">Nicotine Amount:</label>
-        <v-select 
+        <v-select
           v-model="localProduct.nicotine_amount"
           :options="availableNicotineAmount"
           class="w-full"
@@ -111,11 +111,11 @@
           </template>
         </v-select>
       </div>
-      
+
       <!-- Brand Field -->
       <div class="flex-1 ml-2">
         <label for="brand" class="block text-sm font-bold mb-2">Bottle Size:</label>
-        <v-select 
+        <v-select
           v-model="localProduct.bottle_size"
           :options="availableBottleSizes"
           class="w-full"
@@ -194,8 +194,8 @@ export default {
         console.log(this.localProduct)
         this.$store.dispatch('saveProduct', {
           productData: this.localProduct,
-          storeId: 1,
-        }); 
+          store_ids : [1,2,3,4],
+        });
         this.localProduct = null;
       },
       addBrandFromInput() {
@@ -223,7 +223,7 @@ export default {
         }
       }
     },
-    
+
 };
 
 </script>
