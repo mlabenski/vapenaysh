@@ -10,6 +10,7 @@ export default new Vuex.Store({
 		pendingEdits,
 	},
 	state: {
+		stores: [],
 		products: [],
 		productfilters: {
 			supplier: null,
@@ -56,6 +57,9 @@ export default new Vuex.Store({
 			state.saveStatus = 'ERROR';
 			state.saveError = error;
 		},
+		SET_STORES(state, stores) {
+            state.stores = stores;
+        }
 	},
 	actions: {
 		loadProducts({ commit }) {
@@ -86,6 +90,17 @@ export default new Vuex.Store({
 					// Handle the error here, e.g., you might commit to a 'SET_ERROR' mutation.
 				});
 		},
+
+		// Store data
+		fetchStores({ commit }, userID) {
+            axios.get(`http://localhost:8080/user/stores?userID=${userID}`)
+                .then(response => {
+                    commit('SET_STORES', response.data);
+                })
+                .catch(error => {
+                    console.error("Error fetching stores:", error);
+                });
+        },
 
 		// Categories Get retrieval
 		async fetchCategories({ commit }) {
@@ -182,6 +197,12 @@ export default new Vuex.Store({
 				(product) => product.nicotine_amount
 			);
 			return [...new Set(nicotineAmount)];
+		},
+		uniqueStoreIDs: (state) => {
+			const ids = state.stores.map(
+				(store) => store.storeID
+			);
+			return [...new Set(ids)]
 		},
 		getEditableProduct: (state) => {
 			console.log('inside the editable product');

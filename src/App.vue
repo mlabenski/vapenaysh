@@ -144,7 +144,7 @@ export default {
 		closeModal() {
 			this.showPendingUpdates = false;
 		},
-		...mapActions(['loadProducts', 'updateEditableProductID', 'fetchCategories']),
+		...mapActions(['loadProducts', 'updateEditableProductID', 'fetchCategories', 'fetchStores']),
 	},
 	computed: {
 		...mapGetters(['allProducts', 'getEditableProduct', 'categories', 'getChanges']),
@@ -168,6 +168,7 @@ export default {
 	created() {
 		this.fetchCategories();
 		this.loadProducts();
+		this.fetchStores(1923011923);
 	},
 };
 
