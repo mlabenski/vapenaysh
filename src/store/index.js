@@ -58,8 +58,8 @@ export default new Vuex.Store({
 			state.saveError = error;
 		},
 		SET_STORES(state, stores) {
-            state.stores = stores;
-        }
+			state.stores = stores;
+		},
 	},
 	actions: {
 		loadProducts({ commit }) {
@@ -93,14 +93,15 @@ export default new Vuex.Store({
 
 		// Store data
 		fetchStores({ commit }, userID) {
-            axios.get(`http://localhost:8080/user/stores?userID=${userID}`)
-                .then(response => {
-                    commit('SET_STORES', response.data);
-                })
-                .catch(error => {
-                    console.error("Error fetching stores:", error);
-                });
-        },
+			axios
+				.get(`http://localhost:8080/user/stores?userID=${userID}`)
+				.then((response) => {
+					commit('SET_STORES', response.data);
+				})
+				.catch((error) => {
+					console.error('Error fetching stores:', error);
+				});
+		},
 
 		// Categories Get retrieval
 		async fetchCategories({ commit }) {
@@ -149,7 +150,7 @@ export default new Vuex.Store({
 				url: 'http://localhost:8080/product/entry',
 				data: {
 					product: productData,
-					store_ids: store_ids
+					store_ids: store_ids,
 				},
 				headers: {
 					'Content-Type': 'application/json',
@@ -199,10 +200,8 @@ export default new Vuex.Store({
 			return [...new Set(nicotineAmount)];
 		},
 		uniqueStoreIDs: (state) => {
-			const ids = state.stores.map(
-				(store) => store.storeID
-			);
-			return [...new Set(ids)]
+			const ids = state.stores.map((store) => store.storeID);
+			return [...new Set(ids)];
 		},
 		getEditableProduct: (state) => {
 			console.log('inside the editable product');

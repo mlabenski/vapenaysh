@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import StoreSummary from '../StoreID/StoreSummary.vue';
+import StoreSummary from '../StoreID/StoreSummary';
 import ProductsHome from '../Products/ProductsHome.vue';
 
 export default {

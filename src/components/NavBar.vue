@@ -35,7 +35,7 @@
 			<div class="resizable-handle" @mousedown="handleMouseDown"></div>
 			<div class="absolute bottom-2 w-full flex items-center">
 				<!-- Save Button (Green and 1/3 width) -->
-				<button class="w-2/3 bg-green-500 text-white p-2 rounded hover:bg-green-600">Save</button>
+				<button class="w-2/3 bg-green-500 text-white p-2 rounded hover:bg-green-600" @click="saveChanges">Save</button>
 
 				<!-- White space (1/3 width) -->
 				<div class="w-1/4"></div>
@@ -126,6 +126,18 @@ export default {
 			document.addEventListener('mousemove', handleMouseMove);
 			document.addEventListener('mouseup', handleMouseUp);
 		},
+		saveChanges() {
+			this.$store.dispatch('saveAllChanges')
+				.then(response => {
+					// Handle the successful response here
+					console.log('Changes saved:', response);
+					// You might want to notify the user of the success
+				})
+				.catch(error => {
+					// Handle errors here, such as displaying a notification to the user
+					console.error('Failed to save changes:', error);
+				});
+		}
 	},
 	async created() {
 		try {
@@ -167,4 +179,5 @@ export default {
 	width: 5px;
 	cursor: w-resize;
 	z-index: 10;
-}</style>
+}
+</style>
