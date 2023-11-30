@@ -132,8 +132,9 @@ export default new Vuex.Store({
 			console.log('made it to the editable product ID');
 			commit('SET_EDITABLE_PRODUCT_ID', id);
 		},
-		saveProduct({ commit }, { productData, store_ids }) {
+		saveProduct({ commit }, { productData, store_ids, product_img }) {
 			console.log(productData);
+			console.log(product_img);
 			// Convert categories array to a comma-separated string
 			if (
 				productData.categories &&
@@ -151,6 +152,7 @@ export default new Vuex.Store({
 				data: {
 					product: productData,
 					store_ids: store_ids,
+					product_img: product_img
 				},
 				headers: {
 					'Content-Type': 'application/json',
