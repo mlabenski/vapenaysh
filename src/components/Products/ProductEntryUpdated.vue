@@ -1,5 +1,31 @@
 <template>
 	<div class="p-6 bg-white rounded shadow-md">
+		<div class="grid grid-cols-3 gap-4 mb-6">
+  <div class="relative w-3/4 transition duration-300 hover:scale-105">
+    <div class="rounded-lg overflow-hidden shadow-lg">
+      <img src="@/assets/glass-ware-category-md.png" alt="Glassware" class="w-full h-auto" />
+      <div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center">
+        <span class="text-white font-bold">Glassware</span>
+      </div>
+    </div>
+  </div>
+  <div class="relative w-3/4 transition duration-300 hover:scale-105">
+    <div class="rounded-lg overflow-hidden shadow-lg">
+      <img src="@/assets/ejuice-header-lg.png" alt="E-Juice" class="w-full h-auto" />
+      <div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center">
+        <span class="text-white font-bold">E-Juice</span>
+      </div>
+    </div>
+  </div>
+  <div class="relative w-3/4 transition duration-300 hover:scale-105">
+    <div class="rounded-lg overflow-hidden shadow-lg">
+      <img src="@/assets/cbd-header-lg.png" alt="CBD" class="w-full h-auto" />
+      <div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center">
+        <span class="text-white font-bold">CBD</span>
+      </div>
+    </div>
+  </div>
+</div>
 		<div class="mb-6 flex justify-between items-center">
 			<h1 class="text-2xl">New product</h1>
 			<div>
@@ -231,5 +257,12 @@ export default {
 textarea {
 	resize: vertical;
 	/* Allow vertical resizing */
+}
+.product-type-image {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.product-type-image:hover {
+  transform: scale(1.05);
 }
 </style>
