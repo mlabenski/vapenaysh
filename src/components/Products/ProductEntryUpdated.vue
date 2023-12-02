@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="">
 		<div v-if="isDragging"
        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-lg z-50"
        @dragover.prevent @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">

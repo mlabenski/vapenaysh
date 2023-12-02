@@ -77,7 +77,7 @@ export default {
 			navbarItems: [
 				{ name: 'home', label: 'Home', subItems: [] },
 				{ name: 'store', label: 'Store' },
-				{ name: 'products', label: 'Products', subItems: ['Create New', 'View All', 'Search'] },
+				{ name: 'products', label: 'Products', subItems: ['Create New', 'View All', 'Search', 'Add Product Group'] },
 				{ name: 'settings', label: 'Settings', subItems: ['Add New Store', 'Account', 'Support'] },
 				// Add more items as necessary
 			],

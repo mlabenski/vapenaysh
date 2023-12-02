@@ -32,6 +32,7 @@
 				<DefaultPanel v-if="!activePanel" :username="`123`" :isMobile="isMobile"></DefaultPanel>
 				<ProductEntryUpdated v-if="(activePanel && activePanel.store === 'Create New') || editableProduct"
 					:product="editableProduct" @cancelProductEntry="handleCancelProductEntry"></ProductEntryUpdated>
+				<ProductGroupEntry v-if="activePanel && activePanel.store === 'Add Product Group'" :storeIDs="stores" ></ProductGroupEntry>
 				<Notifications v-if="!activePanel" :notifications="notifications"
 					@notification-removed="handleNotificationRemoval"></Notifications>
 				<CardsGrid v-if="!activePanel" :cards="cards" />
@@ -52,15 +53,17 @@ import ProductEntryUpdated from './components/Products/ProductEntryUpdated.vue'
 import Notifications from './components/Misc/Notifications.vue'
 import CardsGrid from './components/Misc/CardsGrid.vue'
 import PendingUpdates from './components/Products/Updates/PendingUpdates'
+import ProductGroupEntry from './components/Products/ProductGroupEntry.vue'
 import { mapGetters, mapActions } from 'vuex';
 export default {
-	components: { NavBar, ActivePanels, DefaultPanel, Notifications, CardsGrid, ProductEntryUpdated, PendingUpdates },
+	components: { NavBar, ActivePanels, DefaultPanel, Notifications, CardsGrid, ProductEntryUpdated, PendingUpdates, ProductGroupEntry },
 	data() {
 		return {
 			isMobile: window.innerWidth <= 768,
 			activePanel: null,
 			activePanelStore: null,
 			showPendingUpdates: false,
+			storeIDs: [],
 			cards: [
 				{
 					title: 'Set up your outlets and registers',
@@ -147,12 +150,15 @@ export default {
 		...mapActions(['loadProducts', 'updateEditableProductID', 'fetchCategories', 'fetchStores']),
 	},
 	computed: {
-		...mapGetters(['allProducts', 'getEditableProduct', 'categories', 'getChanges']),
+		...mapGetters(['allProducts', 'getEditableProduct', 'categories', 'getChanges', 'uniqueStoreIDs']),
 		products() {
 			return this.allProducts;
 		},
 		changes() {
 			return this.getChanges;
+		},
+		stores() {
+			return this.uniqueStoreIDs;
 		},
 		editableProduct() {
 			console.log(this.getEditableProduct);
