@@ -30,8 +30,10 @@
 					v-if="activePanel && (activePanel.store === 'View All' || activePanel.panel === 'store') && !editableProduct"
 					:panelData="activePanel" />
 				<DefaultPanel v-if="!activePanel" :username="`123`" :isMobile="isMobile"></DefaultPanel>
-				<ProductEntryUpdated v-if="(activePanel && activePanel.store === 'Create New') || editableProduct"
-					:product="editableProduct" @cancelProductEntry="handleCancelProductEntry"></ProductEntryUpdated>
+				<!-- <ProductEntryUpdated v-if="(activePanel && activePanel.store === 'Create New') || editableProduct"
+					:product="editableProduct" @cancelProductEntry="handleCancelProductEntry"></ProductEntryUpdated> -->
+					<ProductEntryDynamic v-if="(activePanel && activePanel.store === 'Create New') || editableProduct"
+					:product="editableProduct" @cancelProductEntry="handleCancelProductEntry"></ProductEntryDynamic>
 				<ProductGroupEntry v-if="activePanel && activePanel.store === 'Add Product Group'" :storeIDs="stores" ></ProductGroupEntry>
 				<Notifications v-if="!activePanel" :notifications="notifications"
 					@notification-removed="handleNotificationRemoval"></Notifications>
@@ -49,14 +51,14 @@ import NavBar from '@/components/NavBar.vue';
 import ActivePanels from './components/Panels/Panels.vue'
 import DefaultPanel from './components/Panels/DefaultPanel.vue'
 //import ProductEntry from './components/Products/productEntry.vue'
-import ProductEntryUpdated from './components/Products/ProductEntryUpdated.vue'
+import ProductEntryDynamic from './components/Products/ProductEntryDynamic.vue'
 import Notifications from './components/Misc/Notifications.vue'
 import CardsGrid from './components/Misc/CardsGrid.vue'
 import PendingUpdates from './components/Products/Updates/PendingUpdates'
 import ProductGroupEntry from './components/Products/ProductGroupEntry.vue'
 import { mapGetters, mapActions } from 'vuex';
 export default {
-	components: { NavBar, ActivePanels, DefaultPanel, Notifications, CardsGrid, ProductEntryUpdated, PendingUpdates, ProductGroupEntry },
+	components: { NavBar, ActivePanels, DefaultPanel, Notifications, CardsGrid, ProductEntryDynamic, PendingUpdates, ProductGroupEntry },
 	data() {
 		return {
 			isMobile: window.innerWidth <= 768,
