@@ -78,6 +78,7 @@ export default {
 				{ name: 'home', label: 'Home', subItems: [] },
 				{ name: 'store', label: 'Store' },
 				{ name: 'products', label: 'Products', subItems: ['Create New', 'View All', 'Search', 'Add Product Group'] },
+				{ name: 'p_groups', label: 'Product Groups', subItems: ['Create New', 'View All'] },
 				{ name: 'settings', label: 'Settings', subItems: ['Add New Store', 'Account', 'Support'] },
 				// Add more items as necessary
 			],
@@ -85,6 +86,7 @@ export default {
 				home: false,
 				store: false,
 				products: false,
+				p_groups: false,
 				settings: false,
 				// Initialize other items as false as well
 			},

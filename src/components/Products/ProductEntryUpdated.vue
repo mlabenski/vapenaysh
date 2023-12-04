@@ -10,11 +10,12 @@
 			<img :src="droppedImageURL" alt="Dropped Image" class="max-w-xs mx-auto"/>
 		</div>
 		<div class="p-6 bg-white rounded shadow-md">
+			<h1 class="text-2xl pb-2">Product Groups:</h1>
 			<div class="grid grid-cols-3 gap-4 mb-6">
 				<div class="relative w-3/4 transition duration-300 hover:scale-105">
 					<div class="rounded-lg overflow-hidden shadow-lg">
 						<img src="@/assets/glass-ware-category-md.png" alt="Glassware" class="w-full h-auto" />
-						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center">
+						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center"  @click="showDynamicForm = true">
 							<span class="text-white font-bold">Glassware</span>
 						</div>
 					</div>
@@ -22,7 +23,7 @@
 				<div class="relative w-3/4 transition duration-300 hover:scale-105">
 					<div class="rounded-lg overflow-hidden shadow-lg">
 						<img src="@/assets/ejuice-header-lg.png" alt="E-Juice" class="w-full h-auto" />
-						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center">
+						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center" @click="showDynamicForm = false">
 							<span class="text-white font-bold">E-Juice</span>
 						</div>
 					</div>
@@ -36,6 +37,7 @@
 					</div>
 				</div>
 			</div>
+			<div v-if="!showDynamicForm">
 			<div class="mb-6 flex justify-between items-center">
 				<h1 class="text-2xl">New product</h1>
 				<div>
@@ -155,9 +157,9 @@
 					</v-select>
 				</div>
 			</div>
-
-
-			<!-- Other product details here... -->
+		</div>
+		<!-- Beginning of Dynamic Forms -->
+		<ProductEntryDynamic v-if="showDynamicForm" />
 		</div>
 	</div>
 </template>
@@ -167,10 +169,11 @@ import { mapGetters } from 'vuex';
 import VueSelect from 'vue-select';
 import axios from 'axios';
 import "vue-select/dist/vue-select.css";
-
+import ProductEntryDynamic from './ProductEntryDynamic.vue';
 export default {
 	components: {
-		'v-select': VueSelect
+		'v-select': VueSelect,
+		ProductEntryDynamic
 	},
 	props: {
 		product: {
@@ -202,6 +205,7 @@ export default {
 			droppedImageURL: null,
 			dragCounter : null,
 			productImageURL: '',
+			showDynamicForm: false,
 		};
 	},
 	computed: {

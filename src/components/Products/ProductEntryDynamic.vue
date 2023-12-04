@@ -1,30 +1,47 @@
 <template>
-	<div>
+	<div v-if="formData" class="max-w-4xl mx-auto bg-white p-6 rounded shadow-md">
 		<!-- Dynamic product group selection -->
-		<div class="product-group-selector">
-			<button v-for="(fields, groupName) in productGroups" :key="groupName" @click="currentProductGroup = groupName">
-				{{ groupName }}
-			</button>
+		<div class="mb-6">
+			<h1 class="text-2xl font-semibold mb-2">New product</h1>
+			<p class="text-sm text-gray-500 mb-4">
+				Add, view and edit your products all in one place.
+				<a href="#" class="text-blue-500 hover:text-blue-600 underline">Need help?</a>
+			</p>
 		</div>
 
-		<div class="dynamic-form">
-			<div v-for="field in formFields" :key="field.name">
-				<label :for="field.name">{{ field.name }}</label>
-				<v-select v-if="field.isSelect" v-model="formData[field.name]"
-                          :options="field.options"
-                          multiple class="w-full">
-                </v-select>
-				<input v-else-if="field.type === 'TEXT'" type="text" v-model="formData[field.name]">
-				<input v-else-if="field.type === 'INTEGER'" type="number" v-model="formData[field.name]">
+		<div class="dynamic-form grid gap-4 mb-4">
+			<!-- Dynamically generated form fields -->
+			<div v-for="field in formFields" :key="field.name" class="md:flex md:items-center md:justify-between">
+				<label :for="field.name" class="block font-medium text-gray-700">{{ field.label || field.name }}</label>
+				<div class="mt-1 md:mt-0 md:flex-1">
+					<v-select v-if="field.isSelect" v-model="formData[field.name]" :options="field.options"
+						class="w-full"></v-select>
+					<input v-else-if="field.type === 'TEXT'" type="text" v-model="formData[field.name]"
+						class="w-full border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md">
+					<input v-else-if="field.type === 'INTEGER'" type="number" v-model="formData[field.name]"
+						class="w-full border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md">
+				</div>
 			</div>
-			<!-- Add your submit button and other logic -->
+		</div>
+
+		<div class="flex items-center justify-end mt-6">
+			<button
+				class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+				@click="cancel">
+				Cancel
+			</button>
+			<button
+				class="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+				@click="save">
+				Save
+			</button>
 		</div>
 	</div>
 </template>
 
 
+
 <script>
-import { mapGetters } from 'vuex';
 import VueSelect from 'vue-select';
 import axios from 'axios';
 import "vue-select/dist/vue-select.css";
@@ -33,62 +50,26 @@ export default {
 	components: {
 		'v-select': VueSelect
 	},
-	props: {
-		product: {
-			type: Object,
-			default: () => ({
-				flavor: '',
-				brand_name: '',
-				description: '',
-				categories: '',
-				nicotine_amount: '',
-				bottle_size: '',
-				price: 0
-			})
-		}
-	},
 	data() {
 		return {
-			stores: [],
-			localProduct: { ...this.product },
-			isBrandAvailable: false,
-			categories: ["fruit and candy", "menthol", "tobacco", "breakfast", "creams and custards", "salt nic", "all"],
-			bottleSizes: ["100ml", "150ml", "200ml"],
-			nicotineAmounts: [0, 2, 4, 6],
-			flavor: '',
-			saltNic: false,
-			regularNic: false,
-			isDragging: false,
-			imageDropped: false,
-			droppedImageURL: null,
-			dragCounter: null,
-			productImageURL: '',
 			currentProductGroup: null,
 			productGroups: {},
 			formData: {},
+			formFields: []
 		};
 	},
 	created() {
 		this.fetchProductGroupData();
-	},
-	computed: {
-		...mapGetters({
-			availableBrands: 'uniqueBrands',
-			availableBottleSizes: 'uniqueBottleSizes',
-			availableNicotineAmount: 'uniqueNicotineAmount',
-			availableStores: 'uniqueStoreIDs'
-		})
 	},
 	methods: {
 		async fetchProductGroupData() {
 			try {
 				const response = await axios.get('http://localhost:8080/productGroupFieldsHandler?store_id=1');
 				this.productGroups = response.data;
-				this.currentProductGroup = Object.keys(this.productGroups)[0];
+				this.currentProductGroup = Object.keys(this.productGroups)[1];
 				this.loadFormFields(this.currentProductGroup);
 			} catch (error) {
 				console.error("Error fetching product group data:", error);
-				// Handle the error appropriately
 			}
 		},
 		loadFormFields(productGroup) {
@@ -97,137 +78,28 @@ export default {
 					...field,
 					isSelect: Array.isArray(field.options) && field.options.length > 0
 				}));
-				this.initializeFormData();
+				this.formFields.forEach(field => {
+					if (!Object.prototype.hasOwnProperty.call(this.formData, field.name)) {
+						this.$set(this.formData, field.name, field.isSelect ? [] : (field.type === 'INTEGER' ? 0 : ''));
+					}
+				});
 			}
 		},
-		initializeFormData() {
-			this.formData = {};
-			this.formFields.forEach(field => {
-				this.formData[field.name] = field.isSelect ? [] : (field.type === 'INTEGER' ? 0 : '');
-			});
+		cancel(){
+			//not implemented yet
 		},
-		searchBrands() {
-			this.isBrandAvailable = this.availableBrands.includes(this.localProduct.brand);
-		},
-		updateNicotineOptions() {
-			if (this.localProduct.category === 'salt nic') {
-				this.nicotineAmounts = [0, 20, 35, 50];
-			} else {
-				this.nicotineAmounts = [0, 2, 4, 6];
-			}
-		},
-		saveProductWithImage() {
-			const blob = this.productImageFile instanceof Blob
-				? this.productImageFile
-				: new Blob([this.productImageFile], { type: this.productImageFile.type });
-
-			let formData = new FormData();
-			if (
-				this.localProduct.categories &&
-				Array.isArray(this.localProduct.categories)
-			) {
-				this.localProduct.categories = this.localProduct.categories.join(', ');
-			}
-			formData.append('product_img', blob);
-			formData.append('product', JSON.stringify(this.localProduct));
-			formData.append('store_ids', JSON.stringify(this.stores));
-
-			axios({
-				method: 'post',
-				url: 'http://localhost:8080/product/entry',
-				data: formData,
-				headers: {
-					'Content-Type': 'multipart/form-data',
-				},
-			}).then(response => {
-				// Commit a mutation or dispatch an action on success
-				this.$store.commit('PRODUCT_SAVE_SUCCESS', { product: response.data });
-			}).catch(error => {
-				// Commit a mutation or dispatch an action on error
-				this.$store.commit('PRODUCT_SAVE_ERROR', error);
-			});
-		},
-		saveProduct() {
-			console.log(this.localProduct);
-			console.log(`store IDs ` + this.stores);
-			this.saveProductWithImage();
-			// this.$store.dispatch('saveProduct', {
-			// 	productData: this.localProduct,
-			// 	store_ids: this.stores,
-			// 	product_img: this.productImageFile // Pass the file object instead of the URL
-			// });
-			this.localProduct = { ...this.product };
-		},
-		addBrandFromInput() {
-			const newBrand = this.$refs.brandSelect.search;
-			if (newBrand) {
-				this.localProduct = { ...this.product };
-				// Additional logic if you wish to add this new brand to a data store, send it to an API, etc.
-			}
-		},
-		toggleSaltOption() {
-			this.saltNic = !this.saltNic;
-		},
-		toggleRegularOption() {
-			this.regularNic = !this.regularNic;
-		},
-		removeState() {
-			this.$emit('cancelProductEntry')
-		},
-		// functionality to support image upload
-		onDragEnter(event) {
-			event.preventDefault();
-			this.dragCounter++; // Increment the counter on each enter event
-			this.isDragging = true;
-		},
-		onDragOver(event) {
-			event.preventDefault(); // This is necessary to allow a drop
-		},
-		onDragLeave(event) {
-			event.preventDefault();
-			this.dragCounter--; // Decrement the counter on each leave event
-			if (this.dragCounter === 0) {
-				this.isDragging = false; // Only hide the overlay when all enters have corresponding leaves
-			}
-		},
-		onDrop(event) {
-			event.preventDefault();
-			this.dragCounter = 0;
-			this.isDragging = false;
-			this.imageDropped = true; // Set the flag to true
-			const file = event.dataTransfer.files[0];
-			this.productImageFile = file;
-			this.droppedImageURL = URL.createObjectURL(file); // Create a URL for the image
-		},
-		// eslint-disable-next-line no-unused-vars
-		uploadFiles(files) {
-			// Implement the upload logic here
-		},
-	},
-	mounted() {
-		window.addEventListener('dragenter', this.onDragEnter);
-		window.addEventListener('dragover', this.onDragOver);
-		window.addEventListener('dragleave', this.onDragLeave);
-		window.addEventListener('drop', this.onDrop);
-	},
-	beforeDestroy() {
-		window.removeEventListener('dragenter', this.onDragEnter);
-		window.removeEventListener('dragover', this.onDragOver);
-		window.removeEventListener('dragleave', this.onDragLeave);
-		window.removeEventListener('drop', this.onDrop);
-		if (this.droppedImageURL) {
-			URL.revokeObjectURL(this.droppedImageURL);
+		save() {
+			//not implemented yet
 		}
 	},
 	watch: {
-		product: {
-			immediate: true,
-			handler(newProduct) {
-				this.localProduct = { ...newProduct };
-			}
+		formData: {
+			handler(newVal) {
+				console.log("Form Data Changed:", newVal);
+			},
+			deep: true
 		}
-	},
-
+	}
 };
 
 </script>
@@ -248,5 +120,4 @@ textarea {
 
 .product-type-image:hover {
 	transform: scale(1.05);
-}
-</style>
+}</style>
