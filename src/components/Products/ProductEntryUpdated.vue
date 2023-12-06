@@ -1,13 +1,13 @@
 <template>
 	<div class="">
 		<div v-if="isDragging"
-       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-lg z-50"
-       @dragover.prevent @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">
+			class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-lg z-50"
+			@dragover.prevent @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">
 			Drop the image anywhere to upload
 		</div>
 		<div v-if="imageDropped" class="text-center p-4">
 			<p>Image successfully uploaded!</p>
-			<img :src="droppedImageURL" alt="Dropped Image" class="max-w-xs mx-auto"/>
+			<img :src="droppedImageURL" alt="Dropped Image" class="max-w-xs mx-auto" />
 		</div>
 		<div class="p-6 bg-white rounded shadow-md">
 			<h1 class="text-2xl pb-2">Product Groups:</h1>
@@ -15,7 +15,8 @@
 				<div class="relative w-3/4 transition duration-300 hover:scale-105">
 					<div class="rounded-lg overflow-hidden shadow-lg">
 						<img src="@/assets/glass-ware-category-md.png" alt="Glassware" class="w-full h-auto" />
-						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center"  @click="showDynamicForm = true">
+						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center"
+							@click="loadProductGroup('glassware')">
 							<span class="text-white font-bold">Glassware</span>
 						</div>
 					</div>
@@ -23,7 +24,7 @@
 				<div class="relative w-3/4 transition duration-300 hover:scale-105">
 					<div class="rounded-lg overflow-hidden shadow-lg">
 						<img src="@/assets/ejuice-header-lg.png" alt="E-Juice" class="w-full h-auto" />
-						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center" @click="showDynamicForm = false">
+						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center">
 							<span class="text-white font-bold">E-Juice</span>
 						</div>
 					</div>
@@ -31,135 +32,137 @@
 				<div class="relative w-3/4 transition duration-300 hover:scale-105">
 					<div class="rounded-lg overflow-hidden shadow-lg">
 						<img src="@/assets/cbd-header-lg.png" alt="CBD" class="w-full h-auto" />
-						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center">
+						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center"
+							@click="loadProductGroup('cbd')">
 							<span class="text-white font-bold">CBD</span>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div v-if="!showDynamicForm">
-			<div class="mb-6 flex justify-between items-center">
-				<h1 class="text-2xl">New product</h1>
-				<div>
-					<button class="text-gray-500 mr-4" @click="removeState()">Cancel</button>
-					<button @click="saveProduct" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+				<div class="mb-6 flex justify-between items-center">
+					<h1 class="text-2xl">New product</h1>
+					<div>
+						<button class="text-gray-500 mr-4" @click="removeState()">Cancel</button>
+						<button @click="saveProduct" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+					</div>
 				</div>
-			</div>
-			<p class="mb-6 text-gray-500">Add, view and edit your products all in one place. <a href="#"
-					class="text-blue-500 underline">Need help?</a></p>
+				<p class="mb-6 text-gray-500">Add, view and edit your products all in one place. <a href="#"
+						class="text-blue-500 underline">Need help?</a></p>
 
-			<div class="mb-4 flex">
-				<!-- Name Field -->
-				<div class="flex-1 mr-2">
-					<label for="flavor" class="block text-sm font-bold mb-2">Flavor:</label>
-					<input type="text" v-model="localProduct.flavor" class="border p-2 w-full">
+				<div class="mb-4 flex">
+					<!-- Name Field -->
+					<div class="flex-1 mr-2">
+						<label for="flavor" class="block text-sm font-bold mb-2">Flavor:</label>
+						<input type="text" v-model="localProduct.flavor" class="border p-2 w-full">
+					</div>
+
+					<!-- Brand Field -->
+					<div class="flex-1 ml-2">
+						<label for="brand" class="block text-sm font-bold mb-2">Brand:</label>
+						<v-select v-model="localProduct.brand_name" :options="availableBrands" class="w-full"
+							placeholder="Search or select a brand..." ref="brandSelect">
+							<template #no-options>
+								<div @click="addBrandFromInput" class="add-brand-option">
+									Add this brand
+								</div>
+							</template>
+						</v-select>
+					</div>
+				</div>
+				<div class="mb-4">
+					<label for="description" class="block text-sm font-bold mb-2">Description</label>
+					<textarea v-model="localProduct.description" rows="4" placeholder="Enter product description"
+						class="border p-2 w-full"></textarea>
 				</div>
 
-				<!-- Brand Field -->
-				<div class="flex-1 ml-2">
-					<label for="brand" class="block text-sm font-bold mb-2">Brand:</label>
-					<v-select v-model="localProduct.brand_name" :options="availableBrands" class="w-full"
-						placeholder="Search or select a brand..." ref="brandSelect">
-						<template #no-options>
-							<div @click="addBrandFromInput" class="add-brand-option">
-								Add this brand
-							</div>
-						</template>
-					</v-select>
+				<div class="flex mb-4">
+					<div class="flex-none" style="flex-basis: 10%;">
+						<label for="price" class="block text-sm font-bold mb-2">Price</label>
+						<input v-model="localProduct.price" id="price" type="number" placeholder=0
+							class="border p-2 w-full">
+					</div>
+					<div class="flex-none" style="flex-basis: 20%;">
+						<label for="stores" class="block text-sm font-bold mb-2">Stores to Add</label>
+						<!-- You can replace the input with a tag component -->
+						<v-select v-model="stores" :options="availableStores" multiple class="w-full"></v-select>
+					</div>
 				</div>
-			</div>
-			<div class="mb-4">
-				<label for="description" class="block text-sm font-bold mb-2">Description</label>
-				<textarea v-model="localProduct.description" rows="4" placeholder="Enter product description"
-					class="border p-2 w-full"></textarea>
-			</div>
 
-			<div class="flex mb-4">
-				<div class="flex-none" style="flex-basis: 10%;">
-					<label for="price" class="block text-sm font-bold mb-2">Price</label>
-					<input v-model="localProduct.price" id="price" type="number" placeholder=0 class="border p-2 w-full">
+				<!-- Toggle options -->
+				<div class="flex mb-4">
+
+					<!-- Point-of-Sale Option -->
+					<div :class="regularNic ? 'bg-green-200' : ''"
+						class="flex-1 mr-2 p-4 border rounded shadow-md bg-white cursor-pointer hover:bg-green-100"
+						@click="toggleRegularOption">
+						<div v-if="regularNic" class="mb-2">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" viewBox="0 0 20 20"
+								fill="currentColor" aria-hidden="true">
+								<path fill-rule="evenodd"
+									d="M6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+									clip-rule="evenodd" />
+							</svg>
+						</div>
+						<div>
+							<strong>Regular Nicotine</strong>
+							<p>Make this product active and available for sale in-store</p>
+						</div>
+					</div>
+
+					<!-- Online Option -->
+					<div :class="saltNic ? 'bg-green-200' : ''"
+						class="flex-1 ml-2 p-4 border rounded shadow-md bg-white cursor-pointer hover:bg-green-100"
+						@click="toggleSaltOption">
+						<div v-if="saltNic" class="mb-2">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" viewBox="0 0 20 20"
+								fill="currentColor" aria-hidden="true">
+								<path fill-rule="evenodd"
+									d="M6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+									clip-rule="evenodd" />
+							</svg>
+						</div>
+						<div>
+							<strong>Salt Nicotine</strong>
+							<p>Make this product active and available for sale online</p>
+						</div>
+					</div>
 				</div>
-				<div class="flex-none" style="flex-basis: 20%;">
-					<label for="stores" class="block text-sm font-bold mb-2">Stores to Add</label>
+				<div class="mb-4">
+					<label for="tags" class="block text-sm font-bold mb-2">Product Categories</label>
 					<!-- You can replace the input with a tag component -->
-					<v-select v-model="stores" :options="availableStores" multiple class="w-full"></v-select>
+					<v-select v-model="localProduct.categories" :options="categories" multiple class="w-full"></v-select>
 				</div>
-			</div>
-
-			<!-- Toggle options -->
-			<div class="flex mb-4">
-
-				<!-- Point-of-Sale Option -->
-				<div :class="regularNic ? 'bg-green-200' : ''"
-					class="flex-1 mr-2 p-4 border rounded shadow-md bg-white cursor-pointer hover:bg-green-100"
-					@click="toggleRegularOption">
-					<div v-if="regularNic" class="mb-2">
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" viewBox="0 0 20 20"
-							fill="currentColor" aria-hidden="true">
-							<path fill-rule="evenodd"
-								d="M6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-								clip-rule="evenodd" />
-						</svg>
+				<div class="mb-4 flex">
+					<!-- Name Field -->
+					<div class="flex-1 mr-2">
+						<label for="brand" class="block text-sm font-bold mb-2">Nicotine Amount:</label>
+						<v-select v-model="localProduct.nicotine_amount" :options="availableNicotineAmount" class="w-full"
+							placeholder="Search or select a bottle size..." ref="brandSelect">
+							<template #no-options>
+								<div @click="addBrandFromInput" class="add-brand-option">
+									Add this brand
+								</div>
+							</template>
+						</v-select>
 					</div>
-					<div>
-						<strong>Regular Nicotine</strong>
-						<p>Make this product active and available for sale in-store</p>
-					</div>
-				</div>
 
-				<!-- Online Option -->
-				<div :class="saltNic ? 'bg-green-200' : ''"
-					class="flex-1 ml-2 p-4 border rounded shadow-md bg-white cursor-pointer hover:bg-green-100"
-					@click="toggleSaltOption">
-					<div v-if="saltNic" class="mb-2">
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" viewBox="0 0 20 20"
-							fill="currentColor" aria-hidden="true">
-							<path fill-rule="evenodd"
-								d="M6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-								clip-rule="evenodd" />
-						</svg>
-					</div>
-					<div>
-						<strong>Salt Nicotine</strong>
-						<p>Make this product active and available for sale online</p>
+					<!-- Brand Field -->
+					<div class="flex-1 ml-2">
+						<label for="brand" class="block text-sm font-bold mb-2">Bottle Size:</label>
+						<v-select v-model="localProduct.bottle_size" :options="availableBottleSizes" class="w-full"
+							placeholder="Search or select a nicotine amount..." ref="brandSelect">
+							<template #no-options>
+								<div @click="addBrandFromInput" class="add-brand-option">
+									Add this brand
+								</div>
+							</template>
+						</v-select>
 					</div>
 				</div>
 			</div>
-			<div class="mb-4">
-				<label for="tags" class="block text-sm font-bold mb-2">Product Categories</label>
-				<!-- You can replace the input with a tag component -->
-				<v-select v-model="localProduct.categories" :options="categories" multiple class="w-full"></v-select>
-			</div>
-			<div class="mb-4 flex">
-				<!-- Name Field -->
-				<div class="flex-1 mr-2">
-					<label for="brand" class="block text-sm font-bold mb-2">Nicotine Amount:</label>
-					<v-select v-model="localProduct.nicotine_amount" :options="availableNicotineAmount" class="w-full"
-						placeholder="Search or select a bottle size..." ref="brandSelect">
-						<template #no-options>
-							<div @click="addBrandFromInput" class="add-brand-option">
-								Add this brand
-							</div>
-						</template>
-					</v-select>
-				</div>
-
-				<!-- Brand Field -->
-				<div class="flex-1 ml-2">
-					<label for="brand" class="block text-sm font-bold mb-2">Bottle Size:</label>
-					<v-select v-model="localProduct.bottle_size" :options="availableBottleSizes" class="w-full"
-						placeholder="Search or select a nicotine amount..." ref="brandSelect">
-						<template #no-options>
-							<div @click="addBrandFromInput" class="add-brand-option">
-								Add this brand
-							</div>
-						</template>
-					</v-select>
-				</div>
-			</div>
-		</div>
-		<!-- Beginning of Dynamic Forms -->
-		<ProductEntryDynamic v-if="showDynamicForm" />
+			<!-- Beginning of Dynamic Forms -->
+			<ProductEntryDynamic v-if="showDynamicForm" :currentProductGroup="currentProductGroup" />
 		</div>
 	</div>
 </template>
@@ -203,9 +206,12 @@ export default {
 			isDragging: false,
 			imageDropped: false,
 			droppedImageURL: null,
-			dragCounter : null,
+			dragCounter: null,
 			productImageURL: '',
 			showDynamicForm: false,
+			currentProductGroup: null,
+			productGroups: {},
+			productGroupName: ''
 		};
 	},
 	computed: {
@@ -216,7 +222,32 @@ export default {
 			availableStores: 'uniqueStoreIDs'
 		})
 	},
+	created() {
+		this.fetchProductGroupData();
+	},
 	methods: {
+		async fetchProductGroupData() {
+			try {
+				const response = await axios.get('http://localhost:8080/productGroupFieldsHandler?store_id=1');
+				this.productGroups = response.data;
+			} catch (error) {
+				console.error("Error fetching product group data:", error);
+			}
+		},
+		loadProductGroup(groupName) {
+			this.showDynamicForm = true;
+			this.productGroupName = groupName;
+			// Map the group name to the corresponding index in the productGroups object
+			const groupIndex = {
+				glassware: 2,
+				cbd: 0,
+			}[groupName];
+
+			if (groupIndex !== undefined) {
+				this.currentProductGroup = Object.keys(this.productGroups)[groupIndex];
+				console.log(this.currentProductGroup)
+			}
+		},
 		searchBrands() {
 			this.isBrandAvailable = this.availableBrands.includes(this.localProduct.brand);
 		},
@@ -228,18 +259,22 @@ export default {
 			}
 		},
 		saveProductWithImage() {
-			const blob = this.productImageFile instanceof Blob
-				? this.productImageFile
-				: new Blob([this.productImageFile], { type: this.productImageFile.type });
-
 			let formData = new FormData();
+			let blob = null;
+			if (this.productImageFile) {
+				blob = this.productImageFile instanceof Blob
+					? this.productImageFile
+					: new Blob([this.productImageFile], { type: this.productImageFile.type });
+				if (blob) {
+					formData.append('product_img', blob);
+				}
+			}
 			if (
 				this.localProduct.categories &&
 				Array.isArray(this.localProduct.categories)
 			) {
 				this.localProduct.categories = this.localProduct.categories.join(', ');
 			}
-			formData.append('product_img', blob);
 			formData.append('product', JSON.stringify(this.localProduct));
 			formData.append('store_ids', JSON.stringify(this.stores));
 
@@ -250,13 +285,13 @@ export default {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
-				}).then(response => {
-					// Commit a mutation or dispatch an action on success
-					this.$store.commit('PRODUCT_SAVE_SUCCESS', { product: response.data });
-				}).catch(error => {
-					// Commit a mutation or dispatch an action on error
-					this.$store.commit('PRODUCT_SAVE_ERROR', error);
-				});
+			}).then(response => {
+				// Commit a mutation or dispatch an action on success
+				this.$store.commit('PRODUCT_SAVE_SUCCESS', { product: response.data });
+			}).catch(error => {
+				// Commit a mutation or dispatch an action on error
+				this.$store.commit('PRODUCT_SAVE_ERROR', error);
+			});
 		},
 		saveProduct() {
 			console.log(this.localProduct);

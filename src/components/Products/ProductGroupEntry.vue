@@ -34,20 +34,24 @@
 		<!-- Dynamic fields with visual hierarchy -->
 		<div class="space-y-6 mb-6">
 			<div v-for="(field, index) in productGroup.fields" :key="index">
-				<label class="block text-gray-800 text-lg font-semibold mb-1">{{ field.title }}</label>
+				<label class="block text-gray-800 text-lg font-semibold mb-1">{{ field.name }}</label>
 
 				<!-- Consistent layout for text and number fields -->
-				<input v-if="field.type === 'text'" type="text" v-model="field.value"
+				<input v-if="field.type === 'text'" type="text" v-model="field.name"
 					class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-					:placeholder="`Enter ${field.title}`">
+					:placeholder="`Enter ${field.name}`">
 
-				<input v-if="field.type === 'number'" type="number" v-model="field.value"
+				<input v-if="field.type === 'image'" type="text" v-model="field.name"
 					class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-					:placeholder="`Enter ${field.title}`">
+					:placeholder="`Enter image column name: ${field.name}`">
+
+				<input v-if="field.type === 'number'" type="number" v-model="field.name"
+					class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+					:placeholder="`Enter ${field.name}`">
 
 				<!-- Array type fields with visual hierarchy -->
 				<div v-if="field.type === 'array'" class="space-y-2">
-					<input type="text" v-model="field.title"
+					<input type="text" v-model="field.name"
 						class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline"
 						placeholder="Field title (e.g., 'Size')">
 
@@ -137,11 +141,31 @@ export default {
 		addField(type) {
 			let newField = {
 				type: type,
-				title: type === 'array' ? 'Size' : '',
-				value: type === 'text' ? '' : (type === 'number' ? 0 : ''),
-				options: type === 'array' ? ['Small', 'Medium', 'Large'] : null,
+				name: '', // This will be the value for 'text' and 'number' types
+				options: type === 'array' ? ['Small', 'Medium', 'Large'] : [],
+				// `newOption` was not in the original structure, assuming it is for adding new options to 'array' type
 				newOption: ''
 			};
+
+			// Set a default name based on the type
+			switch (type) {
+				case 'text':
+					newField.name = ''; // Default text value
+					break;
+				case 'number':
+					newField.name = 0; // Default number value
+					break;
+				case 'image':
+					newField.name = ''
+					break;
+				case 'array':
+					// Options are already set by default
+					break;
+				default:
+					// Handle other types if necessary
+					break;
+			}
+
 			this.productGroup.fields.push(newField);
 		},
 		addOption(field) {
@@ -179,8 +203,11 @@ export default {
 				});
 		},
 		submitProductGroup() {
-			let cleanedData = this.prepareDataForSubmission();
-			this.submitProductGroupToServer(cleanedData);
+			//Could use the  cleanedData function to validate the input prior to sql
+			//let cleanedData = this.prepareDataForSubmission();
+			let preparedData = JSON.parse(JSON.stringify(this.productGroup));
+			console.log(preparedData)
+			this.submitProductGroupToServer(preparedData);
 		},
 		prepareDataForSubmission() {
 			// Create a copy of the productGroup to avoid mutating the original data
