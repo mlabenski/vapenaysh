@@ -34,6 +34,11 @@
 								class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
 						</div>
 					</div>
+					<div class="flex-none" style="flex-basis: 20%;">
+						<label for="stores" class="block text-sm font-bold mb-2">Stores to Add</label>
+						<!-- You can replace the input with a tag component -->
+						<v-select v-model="stores" :options="availableStores" multiple class="w-full"></v-select>
+					</div>
 				</div>
 
 				<div class="flex justify-end space-x-3">
@@ -69,6 +74,10 @@ export default {
 		currentProductGroup: {
 			type: String,
 			required: true
+		},
+		availableStores: {
+			type: Array,
+			required: true
 		}
 	},
 	data() {
@@ -80,6 +89,7 @@ export default {
 			imageDropped: false,
 			droppedImageURL: null,
 			dragCounter: null,
+			stores: [],
 		};
 	},
 	created() {
@@ -131,7 +141,7 @@ export default {
 
 				// Convert productData to a JSON string and append to formData
 				formData.append('product', JSON.stringify(productData));
-
+				formData.append('storeIDs', JSON.stringify(this.stores ));
 				// Append the image file under the key 'product_img', if it exists
 				if (this.productImageFile) {
 					formData.append('image', this.productImageFile);

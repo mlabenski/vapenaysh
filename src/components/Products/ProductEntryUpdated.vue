@@ -14,27 +14,31 @@
 			<div class="grid grid-cols-3 gap-4 mb-6">
 				<div class="relative w-3/4 transition duration-300 hover:scale-105">
 					<div class="rounded-lg overflow-hidden shadow-lg">
-						<img src="@/assets/glass-ware-category-md.png" alt="Glassware" class="w-full h-auto" />
+						<img src="@/assets/glass-ware-category-md.png" alt="Glassware"
+							style="max-width: 179px; max-height: 175px; object-fit: contain;" />
 						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center"
 							@click="loadProductGroup('glassware')">
-							<span class="text-white font-bold">Glassware</span>
+							<span class="text-white font-bold pl-5">Glassware</span>
 						</div>
 					</div>
 				</div>
 				<div class="relative w-3/4 transition duration-300 hover:scale-105">
 					<div class="rounded-lg overflow-hidden shadow-lg">
-						<img src="@/assets/ejuice-header-lg.png" alt="E-Juice" class="w-full h-auto" />
-						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center">
-							<span class="text-white font-bold">E-Juice</span>
+						<img src="@/assets/ejuice-header-lg.png" alt="E-Juice"
+							style="max-width: 179px; max-height: 175px; object-fit: contain;" />
+						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center"
+							@click="loadProductGroup('ejuice')">
+							<span class="text-white font-bold pl-2">E-Juice</span>
 						</div>
 					</div>
 				</div>
 				<div class="relative w-3/4 transition duration-300 hover:scale-105">
 					<div class="rounded-lg overflow-hidden shadow-lg">
-						<img src="@/assets/cbd-header-lg.png" alt="CBD" class="w-full h-auto" />
+						<img src="@/assets/cbd-header-lg.png" alt="CBD"
+							style="max-width: 179px; max-height: 175px; object-fit: contain;" />
 						<div class="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center"
 							@click="loadProductGroup('cbd')">
-							<span class="text-white font-bold">CBD</span>
+							<span class="text-white font-bold pl-2">CBD</span>
 						</div>
 					</div>
 				</div>
@@ -162,7 +166,7 @@
 				</div>
 			</div>
 			<!-- Beginning of Dynamic Forms -->
-			<ProductEntryDynamic v-if="showDynamicForm" :currentProductGroup="currentProductGroup" />
+			<ProductEntryDynamic v-if="showDynamicForm" :currentProductGroup="currentProductGroup" :availableStores="availableStores"/>
 		</div>
 	</div>
 </template>
@@ -235,7 +239,11 @@ export default {
 			}
 		},
 		loadProductGroup(groupName) {
-			this.showDynamicForm = true;
+			if(groupName == "ejuice") {
+				this.showDynamicForm = false;
+			}
+			else {
+				this.showDynamicForm = true;
 			this.productGroupName = groupName;
 			// Map the group name to the corresponding index in the productGroups object
 			const groupIndex = {
@@ -246,6 +254,7 @@ export default {
 			if (groupIndex !== undefined) {
 				this.currentProductGroup = Object.keys(this.productGroups)[groupIndex];
 				console.log(this.currentProductGroup)
+			}
 			}
 		},
 		searchBrands() {
@@ -394,5 +403,4 @@ textarea {
 
 .product-type-image:hover {
 	transform: scale(1.05);
-}
-</style>
+}</style>

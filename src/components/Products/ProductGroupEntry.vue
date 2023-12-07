@@ -177,7 +177,6 @@ export default {
 		removeOption(field, optionIndex) {
 			field.options.splice(optionIndex, 1);
 		},
-
 		submitProductGroupToServer(productData) {
 			const url = 'http://localhost:8080/productgroups'; // Replace with your API endpoint
 			fetch(url, {
